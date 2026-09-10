@@ -39,13 +39,13 @@ export default function HomePage() {
     return (
         <div className="p-8">
             <div className="mb-6 flex gap-2">
-                <button className="rounded border px-3 py-1" onClick={() => setScene('success')}>成功</button>
-                <button className="rounded border px-3 py-1" onClick={() => setScene('empty')}>空数据</button>
-                <button className="rounded border px-3 py-1" onClick={() => setScene('error')}>出错</button>
+                <button className="rounded border px-3 py-1" onClick={() => switchScene('success')}>成功</button>
+                <button className="rounded border px-3 py-1" onClick={() => switchScene('empty')}>空数据</button>
+                <button className="rounded border px-3 py-1" onClick={() => switchScene('error')}>出错</button>
             </div>
 
             {loading && <Loading />}
-            {!loading && error && <ErrorState message={error} onRetry={() => setScene(scene)} />}
+            {!loading && error && <ErrorState message={error} onRetry={() => switchScene(scene)} />}
             {!loading && !error && data && data.length === 0 && <Empty text="暂无文章" />}
             {!loading && !error && data && data.length > 0 && (
                 <ul className="list-disc pl-6">
