@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import SiteLayout from '../components/SiteLayout'
 import HomePage from '../pages/site/HomePage'
 import ArticlePage from '../pages/site/ArticlePage'
 import ArchivePage from '../pages/site/ArchivePage'
@@ -14,11 +15,14 @@ import AdminSettingsPage from '../pages/admin/AdminSettingsPage'
 export default function AppRoutes(){
     return (
         <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/articles/:slug" element={<ArticlePage />} />
-            <Route path="/archive" element={<ArchivePage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/about" element={<AboutPage />} />
+            {/* 前台：5 个页面共享 SiteLayout（顶栏+页脚），页面内容渲染在 <Outlet /> 处 */}
+            <Route element={<SiteLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/articles/:slug" element={<ArticlePage />} />
+                <Route path="/archive" element={<ArchivePage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/about" element={<AboutPage />} />
+            </Route>
 
             {/* 登录 */}
             <Route path="/login" element={<LoginPage />} />
