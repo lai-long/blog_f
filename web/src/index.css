@@ -6,3 +6,84 @@
 body {
   margin: 0;
 }
+
+/* Markdown 正文排版（对应 .markdown-body 容器）：正文 720px 宽、行高 1.8 的规范在详情页容器上 */
+.markdown-body {
+  line-height: 1.8;
+}
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3 {
+  margin: 1.5em 0 0.5em;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  scroll-margin-top: 80px; /* 目录跳转时不被顶栏挡住 */
+}
+.markdown-body h1 { font-size: 1.5em; }
+.markdown-body h2 { font-size: 1.3em; }
+.markdown-body h3 { font-size: 1.1em; }
+.markdown-body p { margin: 0.8em 0; }
+.markdown-body a {
+  color: var(--color-blue-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0.8em 0;
+  padding-left: 1.5em;
+}
+.markdown-body ul { list-style: disc; }
+.markdown-body ol { list-style: decimal; }
+.markdown-body blockquote {
+  margin: 0.8em 0;
+  border-left: 4px solid var(--color-gray-300);
+  padding-left: 1em;
+  color: var(--color-gray-500);
+}
+.markdown-body code {
+  border-radius: 4px;
+  background: var(--color-gray-100);
+  padding: 2px 6px;
+  font-size: 0.9em;
+}
+.markdown-body pre {
+  margin: 1em 0;
+  overflow-x: auto;
+  border-radius: 8px;
+  padding: 1em;
+}
+.markdown-body pre code {
+  background: none; /* pre 里的 code 已被 hljs 着色，去掉行内样式 */
+  padding: 0;
+}
+.markdown-body img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--color-gray-300);
+  padding: 6px 12px;
+}
+
+/* 深色模式覆盖 */
+.dark .markdown-body h1,
+.dark .markdown-body h2,
+.dark .markdown-body h3 {
+  color: var(--color-gray-100);
+}
+.dark .markdown-body a { color: var(--color-blue-400); }
+.dark .markdown-body blockquote {
+  border-left-color: var(--color-gray-700);
+  color: var(--color-gray-400);
+}
+.dark .markdown-body code { background: var(--color-gray-800); }
+.dark .markdown-body pre code { background: none; }
+.dark .markdown-body th,
+.dark .markdown-body td { border-color: var(--color-gray-700); }
