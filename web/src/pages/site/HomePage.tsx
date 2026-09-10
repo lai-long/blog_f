@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom'
 import { articleListUrl } from '../../api/article'
 import { useFetch } from '../../hooks/useFetch'
+import { useTitle } from '../../hooks/useTitle'
 import type { ArticleListResp } from '../../types'
 import ArticleCard from '../../components/ArticleCard'
 import Pagination from '../../components/Pagination'
@@ -11,6 +12,7 @@ import ErrorState from '../../components/ErrorState'
 const PAGE_SIZE = 10
 
 export default function HomePage() {
+    useTitle('首页')
     // 页码存在 URL 里（?page=2），刷新/分享链接都能还原
     const [searchParams, setSearchParams] = useSearchParams()
     const page = Math.max(1, Number(searchParams.get('page')) || 1)

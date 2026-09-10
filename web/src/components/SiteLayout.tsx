@@ -39,12 +39,17 @@ export default function SiteLayout() {
 
             <footer className="border-t border-gray-200 dark:border-gray-800">
                 <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 text-sm text-gray-400">
-                    <span>© {new Date().getFullYear()} {siteTitle}</span>
-                    {config?.githubUrl && (
-                        <a href={config.githubUrl} target="_blank" rel="noreferrer" className="hover:text-gray-600 dark:hover:text-gray-200">
-                            GitHub
-                        </a>
-                    )}
+                    <span>© {new Date().getFullYear()} {siteTitle}{config?.icp ? ` · ${config.icp}` : ''}</span>
+                    <span className="flex gap-4">
+                        {config?.githubUrl && (
+                            <a href={config.githubUrl} target="_blank" rel="noreferrer" className="hover:text-gray-600 dark:hover:text-gray-200">
+                                GitHub
+                            </a>
+                        )}
+                        {/* RSS / sitemap 由后端输出，前端只放入口 */}
+                        <a href="/v1/rss" target="_blank" rel="noreferrer" className="hover:text-gray-600 dark:hover:text-gray-200">RSS</a>
+                        <a href="/v1/sitemap.xml" target="_blank" rel="noreferrer" className="hover:text-gray-600 dark:hover:text-gray-200">Sitemap</a>
+                    </span>
                 </div>
             </footer>
         </div>

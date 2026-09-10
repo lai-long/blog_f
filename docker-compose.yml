@@ -1,0 +1,10 @@
+services:
+  web:
+    build: ./web
+    container_name: myblog-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    extra_hosts:
+      # 让容器里的 nginx 能访问宿主机的后端（localhost:8812）
+      - "host.docker.internal:host-gateway"
