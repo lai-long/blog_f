@@ -7,10 +7,11 @@ interface FetchState<T> {
     error: string | null
 }
 
-export function useFetch<T>(path: string) {
+// path 为 null 表示"暂不发请求"（如搜索页还没输入关键词），状态保持空闲
+export function useFetch<T>(path: string | null) {
     const [state, setState] = useState<FetchState<T>>({
         data: null,
-        loading: true,
+        loading: path !== null,
         error: null,
     })
 
@@ -19,10 +20,11 @@ export function useFetch<T>(path: string) {
     const [prevPath, setPrevPath] = useState(path)
     if (prevPath !== path) {
         setPrevPath(path)
-        setState({ data: null, loading: true, error: null })
+        setState({ data: null, loading: path !== null, error: null })
     }
 
     const load = useCallback(() => {
+        if (path === null) return
         client
             .get<T>(path)
             .then((data) => setState({ data, loading: false, error: null }))
@@ -40,9 +42,10 @@ export function useFetch<T>(path: string) {
     }, [load])
 
     const reload = useCallback(() => {
+        if (path === null) return
         setState({ data: null, loading: true, error: null })
         load()
-    }, [load])
+    }, [load, path])
 
     return { ...state, reload }
 }
