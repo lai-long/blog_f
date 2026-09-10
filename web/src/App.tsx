@@ -17,6 +17,7 @@ function App() {
         </div>
         <div>
           <h1>Get started</h1>
+          <p className="text-3xl text-red-500">Tail wind</p>
           <p>
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
