@@ -78,4 +78,4 @@ web/src/
 - 全 Docker 化：`web/Dockerfile` 多阶段构建（node 阶段 `npm run build` → nginx:alpine 托管产物），无独立 Node 运行时。
 - `web/nginx.conf`：SPA `try_files $uri /index.html` 兜底、`/v1/` 反代后端、`/assets/` 永久缓存、gzip。
 - 部署不走镜像仓库：服务器 `git pull` 后 `./deploy.sh`（构建+重启+健康检查）；新服务器先 `sudo bash init-server.sh`（装 Docker/Compose、配 2G swap——`npm run build` 内存峰值常超 1.5GB，2C2G 必须配）。详见根目录 `DEPLOY.md`。
-- 已知后端待办：`GET /v1/rss`、`GET /v1/sitemap.xml` 未实现（前端页脚入口已留）。
+- 已知后端待办：无（`GET /v1/rss`、`GET /v1/sitemap.xml` 已实现，为原始 XML 裸路由）。
