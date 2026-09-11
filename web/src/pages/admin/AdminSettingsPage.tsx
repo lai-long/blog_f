@@ -24,6 +24,8 @@ export default function AdminSettingsPage() {
     const [pwdMsg, setPwdMsg] = useState('')
     const [oldPassword, setOldPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [showPwd, setShowPwd] = useState(false) // true=明文显示
 
     const saveConfig = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -45,6 +47,10 @@ export default function AdminSettingsPage() {
     const submitPassword = async (e: React.FormEvent) => {
         e.preventDefault()
         setPwdMsg('')
+        if (newPassword !== confirmPassword) {
+            setPwdMsg('两次输入的新密码不一致')
+            return
+        }
         try {
             await changePassword(oldPassword, newPassword)
             // 改密后旧 token 失效：清空登录态，重新登录
@@ -86,15 +92,33 @@ export default function AdminSettingsPage() {
             <form onSubmit={submitPassword} className="mt-4 space-y-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
                 <label className="block text-sm">
                     旧密码
-                    <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} required autoComplete="current-password" className={`${inputCls} mt-1`} />
+                    <input type={showPwd ? 'text' : 'password'} value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} required autoComplete="current-password" className={`${inputCls} mt-1`} />
                 </label>
                 <label className="block text-sm">
                     新密码
-                    <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={6} autoComplete="new-password" className={`${inputCls} mt-1`} />
+                    <input type={showPwd ? 'text' : 'password'} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={6} autoComplete="new-password" className={`${inputCls} mt-1`} />
                 </label>
-                <button type="submit" className="rounded bg-blue-600 px-4 py-1.5 text-sm text-white hover:bg-blue-700">
-                    修改密码
+                <label className="block text-sm">
+                    确认新密码
+                    <input
+                        type={showPwd ? 'text' : 'password'}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        minLength={6}
+                        autoComplete="new-password"
+                        className={`${inputCls} mt-1 ${confirmPassword && confirmPassword !== newPassword ? 'border-red-500 focus:border-red-500' : ''}`}
+                    />
+                </label>
+                {/* type="button" 必须写，否则在 form 里默认是提交按钮 */}
+                <button type="button" onClick={() => setShowPwd(!showPwd)} className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    {showPwd ? '🙈 隐藏密码' : '👁 显示密码'}
                 </button>
+                <div>
+                    <button type="submit" className="rounded bg-blue-600 px-4 py-1.5 text-sm text-white hover:bg-blue-700">
+                        修改密码
+                    </button>
+                </div>
                 <p className="text-xs text-gray-400">修改成功后需要重新登录</p>
                 {pwdMsg && <p className="text-sm text-red-500">{pwdMsg}</p>}
             </form>
