@@ -16,3 +16,8 @@ export interface CommentSaveBody {
 export function createComment(slug: string, body: CommentSaveBody) {
     return client.post<Record<string, never>>(`/articles/${slug}/comments`, body)
 }
+
+// 浏览上报：SPA 路由变化时由 SiteLayout 调用；失败静默（统计不该影响访客）
+export function trackVisit(path: string) {
+    client.post<Record<string, never>>('/track', { path }).catch(() => {})
+}

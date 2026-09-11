@@ -53,3 +53,7 @@ export function deleteComment(id: number) {
 export function saveSiteConfig(body: { siteTitle?: string; icp?: string; githubUrl?: string }) {
     return client.put<Record<string, never>>('/admin/site/config', body)
 }
+
+export function adminStatsUrl() {
+    return '/admin/stats'
+}

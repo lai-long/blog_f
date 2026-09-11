@@ -1,7 +1,7 @@
-import { adminArticleListUrl, adminCommentListUrl } from '../../api/admin'
+import { adminArticleListUrl, adminCommentListUrl, adminStatsUrl } from '../../api/admin'
 import { useFetch } from '../../hooks/useFetch'
 import { useTitle } from '../../hooks/useTitle'
-import type { AdminArticleListResp, AdminCommentListResp } from '../../types'
+import type { AdminArticleListResp, AdminCommentListResp, VisitStatsResp } from '../../types'
 import Loading from '../../components/Loading'
 import ErrorState from '../../components/ErrorState'
 
@@ -12,6 +12,7 @@ export default function DashboardPage() {
     const articles = useFetch<AdminArticleListResp>(adminArticleListUrl(1, 1000))
     const pending = useFetch<AdminCommentListResp>(adminCommentListUrl(1, 1, 0))
     const latest = useFetch<AdminCommentListResp>(adminCommentListUrl(1, 5))
+    const stats = useFetch<VisitStatsResp>(adminStatsUrl())
 
     if (articles.loading || pending.loading || latest.loading) return <Loading />
     if (articles.error) return <ErrorState message={articles.error} onRetry={articles.reload} />
@@ -26,6 +27,16 @@ export default function DashboardPage() {
         { label: '待审核评论', value: pending.data?.total ?? 0 },
     ]
 
+    const visitCards = [
+        { label: '今日 PV', value: stats.data?.todayPv ?? '-' },
+        { label: '今日 UV', value: stats.data?.todayUv ?? '-' },
+        { label: '累计 PV', value: stats.data?.totalPv ?? '-' },
+        { label: '累计 UV', value: stats.data?.totalUv ?? '-' },
+    ]
+
+    const trend = stats.data?.trend ?? []
+    const maxPv = Math.max(...trend.map((d) => d.pv), 1) // 至少 1，避免除零
+
     return (
         <div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">仪表盘</h1>
@@ -37,6 +48,35 @@ export default function DashboardPage() {
                     </div>
                 ))}
             </div>
+
+            <div className="mt-4 grid grid-cols-4 gap-4">
+                {visitCards.map((c) => (
+                    <div key={c.label} className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+                        <p className="text-sm text-gray-400">{c.label}</p>
+                        <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{c.value}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* 最近 7 天 PV 趋势：纯 div 柱状图，不引图表库 */}
+            {trend.length > 0 && (
+                <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+                    <p className="text-sm text-gray-400">最近 7 天访问量（PV）</p>
+                    <div className="mt-4 flex h-32 items-end gap-2">
+                        {trend.map((d) => (
+                            <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
+                                <span className="text-xs text-gray-400">{d.pv > 0 ? d.pv : ''}</span>
+                                <div
+                                    className="w-full rounded-t bg-blue-500/80"
+                                    style={{ height: `${Math.max((d.pv / maxPv) * 100, d.pv > 0 ? 4 : 1)}%` }}
+                                    title={`${d.date}：PV ${d.pv} / UV ${d.uv}`}
+                                />
+                                <span className="text-xs text-gray-400">{d.date.slice(5)}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <h2 className="mt-8 font-bold text-gray-900 dark:text-gray-100">最新评论</h2>
             <ul className="mt-3 divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white dark:divide-gray-800 dark:border-gray-800 dark:bg-gray-900">

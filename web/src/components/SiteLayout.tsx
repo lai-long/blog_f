@@ -1,5 +1,7 @@
-import { Link, Outlet } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useFetch } from '../hooks/useFetch'
+import { trackVisit } from '../api/interact'
 import { useThemeStore } from '../stores/useThemeStore'
 import type { SiteConfig } from '../types'
 
@@ -10,6 +12,12 @@ export default function SiteLayout() {
 
     const theme = useThemeStore((s) => s.theme)
     const toggle = useThemeStore((s) => s.toggle)
+
+    // SPA 路由每次变化上报一次浏览（后台页面不在 SiteLayout 下，天然不会被统计）
+    const { pathname } = useLocation()
+    useEffect(() => {
+        trackVisit(pathname)
+    }, [pathname])
 
     return (
         <div className="flex min-h-screen flex-col bg-white text-gray-700 dark:bg-gray-950 dark:text-gray-300">

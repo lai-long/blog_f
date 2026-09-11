@@ -110,3 +110,16 @@ export interface AdminCommentListResp {
     list: AdminComment[]
     total: number
 }
+export interface DayStat {
+    date: string
+    pv: number
+    uv: number
+}
+
+export interface VisitStatsResp {
+    todayPv: number
+    todayUv: number
+    totalPv: number
+    totalUv: number
+    trend: DayStat[] // 最近 7 天，按日期升序
+}
