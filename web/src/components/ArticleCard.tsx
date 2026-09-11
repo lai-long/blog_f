@@ -10,6 +10,9 @@ export default function ArticleCard({ article }: { article: ArticleSummary }) {
                 to={`/articles/${article.slug}`}
                 className="text-xl font-bold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
             >
+                {article.isTop === 1 && (
+                    <span className="mr-2 rounded bg-blue-100 px-1.5 py-0.5 align-middle text-xs font-normal text-blue-600 dark:bg-blue-950 dark:text-blue-400">置顶</span>
+                )}
                 {article.title}
             </Link>
             {article.summary && (

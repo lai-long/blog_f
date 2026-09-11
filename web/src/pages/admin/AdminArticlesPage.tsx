@@ -27,22 +27,42 @@ export default function AdminArticlesPage() {
     const [operating, setOperating] = useState(false)
     const [opError, setOpError] = useState('')
 
+    // 上下线/置顶共用的提交：更新接口需要完整字段，先取详情再只改目标字段。
+    // isTop 必须显式带上当前值，否则会被置 0（tags 不传，后端 null 保护会保留标签）
+    const patchArticle = async (a: AdminArticleSummary, patch: { status?: number; isTop?: number }) => {
+        const detail = await client.get<ArticleDetail>(articleDetailUrl(a.slug))
+        await updateArticle(a.id, {
+            title: detail.title,
+            slug: detail.slug,
+            summary: detail.summary,
+            content: detail.content,
+            coverUrl: detail.coverUrl,
+            isTop: patch.isTop ?? detail.isTop,
+            status: patch.status ?? a.status,
+        })
+    }
+
     // 上下线：发布↔隐藏互切（草稿不在此列，草稿应去编辑页完善后再发布）
     const toggleStatus = async (a: AdminArticleSummary) => {
         const next = a.status === 1 ? 2 : 1
         setOperating(true)
         setOpError('')
         try {
-            // 更新接口需要完整字段，先取详情（含 summary/content/cover）再只改 status 提交
-            const detail = await client.get<ArticleDetail>(articleDetailUrl(a.slug))
-            await updateArticle(a.id, {
-                title: detail.title,
-                slug: detail.slug,
-                summary: detail.summary,
-                content: detail.content,
-                coverUrl: detail.coverUrl,
-                status: next,
-            })
+            await patchArticle(a, { status: next })
+            reload()
+        } catch (err) {
+            setOpError(err instanceof ApiError ? err.message : '操作失败')
+        } finally {
+            setOperating(false)
+        }
+    }
+
+    // 置顶/取消置顶
+    const toggleTop = async (a: AdminArticleSummary) => {
+        setOperating(true)
+        setOpError('')
+        try {
+            await patchArticle(a, { isTop: a.isTop === 1 ? 0 : 1 })
             reload()
         } catch (err) {
             setOpError(err instanceof ApiError ? err.message : '操作失败')
@@ -96,7 +116,12 @@ export default function AdminArticlesPage() {
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                             {data.list.map((a) => (
                                 <tr key={a.id}>
-                                    <td className="px-4 py-3 font-bold text-gray-900 dark:text-gray-100">{a.title}</td>
+                                    <td className="px-4 py-3 font-bold text-gray-900 dark:text-gray-100">
+                                        {a.isTop === 1 && (
+                                            <span className="mr-1.5 rounded bg-blue-100 px-1.5 py-0.5 text-xs font-normal text-blue-600 dark:bg-blue-950 dark:text-blue-400">置顶</span>
+                                        )}
+                                        {a.title}
+                                    </td>
                                     <td className="px-4 py-3">
                                         <span className={`rounded px-1.5 py-0.5 text-xs ${STATUS_CLS[a.status]}`}>
                                             {STATUS_LABEL[a.status]}
@@ -110,6 +135,9 @@ export default function AdminArticlesPage() {
                                         <Link to={`/admin/write/${a.slug}`} className="text-blue-600 hover:underline dark:text-blue-400">
                                             编辑
                                         </Link>
+                                        <button type="button" disabled={operating} onClick={() => toggleTop(a)} className="text-gray-500 hover:underline disabled:opacity-40">
+                                            {a.isTop === 1 ? '取消置顶' : '置顶'}
+                                        </button>
                                         <button type="button" disabled={operating} onClick={() => toggleStatus(a)} className="text-gray-500 hover:underline disabled:opacity-40">
                                             {a.status === 1 ? '下线' : '上线'}
                                         </button>

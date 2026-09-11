@@ -26,6 +26,7 @@ export interface ArticleSummary {
     summary?: string
     coverUrl?: string
     views: number
+    isTop: number // 1=置顶
     publishedAt: string
     tags: TagVo[]
 }
@@ -38,6 +39,7 @@ export interface ArticleDetail {
     content: string
     coverUrl?: string
     views: number
+    isTop: number // 1=置顶
     publishedAt: string
     tags: TagVo[]
 }
@@ -85,6 +87,7 @@ export interface AdminArticleSummary {
     slug: string
     status: number // 0=草稿 1=发布 2=隐藏
     views: number
+    isTop: number
     publishedAt: string
     updatedAt: string
 }
