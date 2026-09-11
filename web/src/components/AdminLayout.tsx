@@ -1,6 +1,8 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { logout } from '../api/auth'
 import { useAuthStore } from '../stores/useAuthStore'
+import { useFetch } from '../hooks/useFetch'
+import type { ProfileResp } from '../types'
 
 const navItems = [
     { to: '/admin', label: '仪表盘', end: true },
@@ -14,6 +16,7 @@ const navItems = [
 export default function AdminLayout() {
     const navigate = useNavigate()
     const clear = useAuthStore((s) => s.clear)
+    const { data: profile } = useFetch<ProfileResp>('/admin/profile')
 
     const handleLogout = async () => {
         try {
@@ -49,6 +52,16 @@ export default function AdminLayout() {
                         </NavLink>
                     ))}
                 </nav>
+                <div className="flex items-center gap-2 border-t border-gray-200 px-4 py-3 dark:border-gray-800">
+                    {profile?.avatarUrl ? (
+                        <img src={profile.avatarUrl} alt="头像" className="h-8 w-8 rounded-full object-cover" />
+                    ) : (
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm text-gray-500 dark:bg-gray-700">
+                            {(profile?.nickname || profile?.username || '?').charAt(0)}
+                        </div>
+                    )}
+                    <span className="truncate text-sm">{profile?.nickname || profile?.username}</span>
+                </div>
                 <button
                     type="button"
                     onClick={handleLogout}

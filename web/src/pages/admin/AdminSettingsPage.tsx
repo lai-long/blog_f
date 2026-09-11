@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { saveSiteConfig } from '../../api/admin'
-import { changePassword } from '../../api/auth'
+import { saveSiteConfig, uploadImage } from '../../api/admin'
+import { changePassword, saveProfile } from '../../api/auth'
 import { ApiError } from '../../api/client'
 import { useFetch } from '../../hooks/useFetch'
 import { useTitle } from '../../hooks/useTitle'
 import { useAuthStore } from '../../stores/useAuthStore'
-import type { SiteConfig } from '../../types'
+import type { SiteConfig, ProfileResp } from '../../types'
 import Loading from '../../components/Loading'
 import ErrorState from '../../components/ErrorState'
 
@@ -18,6 +18,7 @@ export default function AdminSettingsPage() {
     const clear = useAuthStore((s) => s.clear)
 
     const { data: config, loading, error, reload } = useFetch<SiteConfig>('/site/config')
+    const { data: profile } = useFetch<ProfileResp>('/admin/profile')
 
     // 站点设置表单：数据回来后用 key 重置受控组件来初始化（见下方 form key）
     const [siteMsg, setSiteMsg] = useState('')
@@ -88,6 +89,10 @@ export default function AdminSettingsPage() {
                 {siteMsg && <p className="text-sm text-gray-500 dark:text-gray-400">{siteMsg}</p>}
             </form>
 
+            <h2 className="mt-8 font-bold text-gray-900 dark:text-gray-100">个人资料</h2>
+            {/* profile 异步回来前不渲染表单，避免 defaultValue 初始化不到 */}
+            {profile && <ProfileForm profile={profile} />}
+
             <h2 className="mt-8 font-bold text-gray-900 dark:text-gray-100">修改密码</h2>
             <form onSubmit={submitPassword} className="mt-4 space-y-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
                 <label className="block text-sm">
@@ -123,5 +128,65 @@ export default function AdminSettingsPage() {
                 {pwdMsg && <p className="text-sm text-red-500">{pwdMsg}</p>}
             </form>
         </div>
+    )
+}
+
+// 个人资料表单：昵称 + 头像（复用封面上传的 /admin/upload 接口）
+function ProfileForm({ profile }: { profile: ProfileResp }) {
+    const [nickname, setNickname] = useState(profile.nickname)
+    const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl ?? '')
+    const [uploading, setUploading] = useState(false)
+    const [msg, setMsg] = useState('')
+
+    const uploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+        setUploading(true)
+        setMsg('')
+        try {
+            const resp = await uploadImage(file)
+            setAvatarUrl(resp.url)
+        } catch (err) {
+            setMsg(err instanceof ApiError ? err.message : '上传失败')
+        } finally {
+            setUploading(false)
+        }
+    }
+
+    const save = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setMsg('')
+        try {
+            await saveProfile({ nickname, avatarUrl })
+            setMsg('保存成功')
+        } catch (err) {
+            setMsg(err instanceof ApiError ? err.message : '保存失败')
+        }
+    }
+
+    return (
+        <form onSubmit={save} className="mt-4 space-y-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <div className="flex items-center gap-4">
+                {avatarUrl ? (
+                    <img src={avatarUrl} alt="头像" className="h-16 w-16 rounded-full object-cover" />
+                ) : (
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 text-xl text-gray-500 dark:bg-gray-700">
+                        {(nickname || profile.username).charAt(0)}
+                    </div>
+                )}
+                <label className="cursor-pointer rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
+                    {uploading ? '上传中…' : '上传头像'}
+                    <input type="file" accept="image/*" onChange={uploadAvatar} className="hidden" />
+                </label>
+            </div>
+            <label className="block text-sm">
+                昵称
+                <input value={nickname} onChange={(e) => setNickname(e.target.value)} placeholder={profile.username} className={`${inputCls} mt-1`} />
+            </label>
+            <button type="submit" className="rounded bg-blue-600 px-4 py-1.5 text-sm text-white hover:bg-blue-700">
+                保存资料
+            </button>
+            {msg && <p className="text-sm text-gray-500 dark:text-gray-400">{msg}</p>}
+        </form>
     )
 }
