@@ -30,6 +30,14 @@ curl http://127.0.0.1:8080/v1/site/config      # 经 nginx 代理到后端，返
 
 ## 日常更新
 
+**推荐：本地构建**（在笔记本上执行，2C2G 服务器上跑 npm build 容易 OOM 卡死）：
+
+```bash
+./deploy-local.sh    # 本机构建镜像 → 传到服务器加载 → 重启容器 → 健康检查
+```
+
+备用：服务器上直接构建（机器内存充裕时可用）：
+
 ```bash
 ./deploy.sh    # git pull → 重新构建 → 重启 → 健康检查
 ```
@@ -50,4 +58,4 @@ curl http://127.0.0.1:8080/v1/site/config      # 经 nginx 代理到后端，返
 
 ## 已知待办（后端侧）
 
-- `GET /v1/rss`、`GET /v1/sitemap.xml` 后端尚未实现（前端页脚入口已留，当前 404）。
+- 无。`GET /v1/rss`、`GET /v1/sitemap.xml` 已实现（原始 XML 输出）。
