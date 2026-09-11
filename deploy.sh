@@ -7,8 +7,12 @@ cd "$(dirname "$0")"
 echo "==> 拉取最新代码"
 git pull
 
-echo "==> 构建并启动（增量构建有缓存）"
-docker compose up -d --build
+echo "==> 构建镜像（限制只用 0 号核：2C2G 机器全核编译会打满 CPU，SSH 都会卡死）"
+# 镜像名与 compose 默认命名（项目目录名-服务名）一致，up -d 会直接复用，不会二次构建
+docker build --cpuset-cpus=0 -t blog_f-web:latest ./web
+
+echo "==> 启动"
+docker compose up -d
 
 echo "==> 健康检查"
 sleep 3
