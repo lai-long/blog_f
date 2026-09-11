@@ -4,6 +4,21 @@ export interface ApiResponse<T> {
     data: T
 }
 
+export interface TagVo {
+    name: string
+    slug: string
+}
+
+export interface TagWithCount {
+    name: string
+    slug: string
+    count: number
+}
+
+export interface TagListResp {
+    list: TagWithCount[]
+}
+
 export interface ArticleSummary {
     id: number
     title: string
@@ -12,6 +27,7 @@ export interface ArticleSummary {
     coverUrl?: string
     views: number
     publishedAt: string
+    tags: TagVo[]
 }
 
 export interface ArticleDetail {
@@ -23,6 +39,7 @@ export interface ArticleDetail {
     coverUrl?: string
     views: number
     publishedAt: string
+    tags: TagVo[]
 }
 
 export interface ArticleListResp {

@@ -6,6 +6,8 @@ import AuthGuard from './AuthGuard'
 import HomePage from '../pages/site/HomePage'
 import ArticlePage from '../pages/site/ArticlePage'
 import ArchivePage from '../pages/site/ArchivePage'
+import TagsPage from '../pages/site/TagsPage'
+import TagArticlesPage from '../pages/site/TagArticlesPage'
 import SearchPage from '../pages/site/SearchPage'
 import AboutPage from '../pages/site/AboutPage'
 import LoginPage from '../pages/auth/LoginPage'
@@ -26,6 +28,8 @@ export default function AppRoutes(){
                 <Route path="/" element={<HomePage />} />
                 <Route path="/articles/:slug" element={<ArticlePage />} />
                 <Route path="/archive" element={<ArchivePage />} />
+                <Route path="/tags" element={<TagsPage />} />
+                <Route path="/tags/:slug" element={<TagArticlesPage />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/about" element={<AboutPage />} />
             </Route>

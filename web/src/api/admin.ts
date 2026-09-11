@@ -9,6 +9,7 @@ export interface ArticleSaveBody {
     summary?: string
     content: string
     coverUrl?: string
+    tags?: string[] // 标签名列表；不传=不动标签，[]=清空
     status: number // 0=草稿 1=发布 2=隐藏
 }
 

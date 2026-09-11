@@ -20,6 +20,7 @@ export default function SiteLayout() {
                     </Link>
                     <nav className="flex items-center gap-4 text-sm">
                         <Link to="/archive" className="hover:text-gray-900 dark:hover:text-gray-100">归档</Link>
+                        <Link to="/tags" className="hover:text-gray-900 dark:hover:text-gray-100">标签</Link>
                         <Link to="/search" className="hover:text-gray-900 dark:hover:text-gray-100">搜索</Link>
                         <Link to="/about" className="hover:text-gray-900 dark:hover:text-gray-100">关于</Link>
                         <button

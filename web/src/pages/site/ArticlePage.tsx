@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { articleDetailUrl } from '../../api/article'
 import { useFetch } from '../../hooks/useFetch'
 import { useTitle } from '../../hooks/useTitle'
@@ -49,6 +49,19 @@ export default function ArticlePage() {
                 <p className="mt-2 text-sm text-gray-400">
                     {date} · {article.views} 次阅读
                 </p>
+                {article.tags.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        {article.tags.map((t) => (
+                            <Link
+                                key={t.slug}
+                                to={`/tags/${encodeURIComponent(t.slug)}`}
+                                className="rounded-full border border-gray-300 px-2 py-0.5 text-xs hover:border-blue-500 hover:text-blue-600 dark:border-gray-700 dark:hover:border-blue-400 dark:hover:text-blue-400"
+                            >
+                                {t.name}
+                            </Link>
+                        ))}
+                    </div>
+                )}
                 <div className="mt-8">
                     <MarkdownRenderer content={article.content} />
                 </div>

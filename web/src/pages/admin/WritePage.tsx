@@ -21,6 +21,7 @@ export default function WritePage() {
     const [summary, setSummary] = useState('')
     const [coverUrl, setCoverUrl] = useState('')
     const [content, setContent] = useState('')
+    const [tagsText, setTagsText] = useState('') // 逗号分隔的标签名
     const [status, setStatus] = useState(0)
 
     const [pageLoading, setPageLoading] = useState(isEdit)
@@ -40,6 +41,7 @@ export default function WritePage() {
                 setSummary(a.summary ?? '')
                 setCoverUrl(a.coverUrl ?? '')
                 setContent(a.content)
+                setTagsText(a.tags.map((t) => t.name).join(', '))
                 setStatus(1) // 公开接口只能查到已发布文章，能查到即为已发布
             })
             .catch((err: unknown) => setError(err instanceof ApiError ? err.message : '加载失败'))
@@ -50,7 +52,11 @@ export default function WritePage() {
         setSaving(true)
         setError('')
         try {
-            const body = { title, slug, summary, content, coverUrl, status: nextStatus }
+            const tags = tagsText
+                .split(/[,，]/)
+                .map((s) => s.trim())
+                .filter(Boolean)
+            const body = { title, slug, summary, content, coverUrl, tags, status: nextStatus }
             if (isEdit) await updateArticle(id, body)
             else await createArticle(body)
             navigate('/admin/articles')
@@ -89,6 +95,7 @@ export default function WritePage() {
                 <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="标题" required className={`${inputCls} w-64`} />
                 <input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="slug（URL 用，如 my-first-post）" required className={`${inputCls} w-64`} />
                 <input value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="摘要（可选）" className={`${inputCls} w-64`} />
+                <input value={tagsText} onChange={(e) => setTagsText(e.target.value)} placeholder="标签（逗号分隔，可选）" className={`${inputCls} w-64`} />
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-3">
