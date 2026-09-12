@@ -17,13 +17,16 @@
 # 1. 初始化服务器（装 Docker、配 2G swap；2C2G 机器必做，否则构建会 OOM）
 sudo bash init-server.sh
 
-# 2. 克隆代码（后端也要部署，见后端仓库 DEPLOY.md）
+# 2. 创建前后端共享的 docker 网络（一次性；nginx 用容器名 myblog-backend 直连后端）
+docker network create blog-net
+
+# 3. 克隆代码（后端也要部署，见后端仓库 DEPLOY.md）
 git clone <本仓库地址> blog_f && cd blog_f
 
-# 3. 构建启动
+# 4. 构建启动
 docker compose up -d --build
 
-# 4. 验证
+# 5. 验证
 curl http://127.0.0.1:8080/                    # 首页 200
 curl http://127.0.0.1:8080/v1/site/config      # 经 nginx 代理到后端，返回 JSON
 ```
@@ -44,8 +47,8 @@ curl http://127.0.0.1:8080/v1/site/config      # 经 nginx 代理到后端，返
 
 ## 配置说明
 
-- **后端地址**：`web/nginx.conf` 里 `proxy_pass http://host.docker.internal:8812`。
-  前后端同机部署不用改；分离部署改成后端地址即可。
+- **后端地址**：`web/nginx.conf` 里 `proxy_pass http://myblog-backend:8812`（同一 docker 网络 `blog-net` 内用容器名直连）。
+  前后端同机部署不用改；分离部署改成后端地址即可（此时 `docker-compose.yml` 的 networks 段也要相应调整）。
 - **端口**：`docker-compose.yml` 里 `8080:80`，按需改左侧端口。
 - 前端无环境变量、无密钥，所有配置都在这两个文件里。
 

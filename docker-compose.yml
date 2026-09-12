@@ -6,6 +6,9 @@ services:
     ports:
       - "80:80"     # 标准 HTTP 端口，访问不用带端口号
       - "8080:80"   # 保留作测试用
-    extra_hosts:
-      # 让容器里的 nginx 能访问宿主机的后端（localhost:8812）
-      - "host.docker.internal:host-gateway"
+    networks:
+      - blog-net    # 与后端同一网络，nginx 用容器名 myblog-backend 直连
+
+networks:
+  blog-net:
+    external: true  # 由后端仓库 compose 创建/共享；首次部署先 docker network create blog-net

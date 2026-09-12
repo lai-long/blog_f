@@ -20,7 +20,7 @@ docker save "$IMAGE" | gzip | ssh "$SERVER" "gunzip | docker load"
 
 echo "==> 服务器上重建容器"
 # git pull 失败（GitHub 网络抖动）不影响本次部署：镜像里已包含最新代码
-ssh "$SERVER" "cd $REMOTE_DIR && { git pull || echo '!! git pull 失败，跳过（不影响部署）'; } && docker compose up -d"
+ssh "$SERVER" "docker network create blog-net 2>/dev/null; cd $REMOTE_DIR && { git pull || echo '!! git pull 失败，跳过（不影响部署）'; } && docker compose up -d"
 
 echo "==> 健康检查"
 sleep 2
