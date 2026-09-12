@@ -25,7 +25,7 @@ ssh "$SERVER" "cd $REMOTE_DIR && { git pull || echo '!! git pull 失败，跳过
 echo "==> 健康检查"
 sleep 2
 if ssh "$SERVER" "curl -fsS -o /dev/null http://127.0.0.1:8080/"; then
-    echo "==> 完成：https://herelai.top （或 http://$SERVER_IP:8080）"
+    echo "==> 完成：http://101.201.119.1 （或 https://herelai.top）"
 else
     echo "!! 首页不可访问，到服务器上看日志：docker compose logs web" >&2
     exit 1
