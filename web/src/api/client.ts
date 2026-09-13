@@ -25,8 +25,8 @@ async function request<T>(path: string, options: RequestInit = {}, json = true):
     const res = await fetch(`/v1${path}`, { ...options, headers })
     const body: ApiResponse<T> = await res.json()
     if (body.code !== 0) {
-        if (body.code === 40103) {
-            // token 无效/过期：清空登录态并跳登录页，带上回跳地址
+        if (body.code === 40102 || body.code === 40103) {
+            // 40102 token 过期 / 40103 token 无效：都清空登录态并跳登录页，带上回跳地址
             // 整页跳转同时会清空内存中的 zustand 登录态（token 本就只存内存）
             accessToken = ''
             const redirect = encodeURIComponent(location.pathname + location.search)
