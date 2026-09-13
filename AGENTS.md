@@ -52,7 +52,7 @@ web/src/
 
 ## 与后端的契约要点（必须遵守）
 
-- 统一响应包装 `{ code, message, data }`，**HTTP 状态码恒为 200**，业务成败看 `code`（0 成功；40101 登录失败；40103 token 无效/过期 → client.ts 清空登录态跳 `/login?redirect=`）。
+- 统一响应包装 `{ code, message, data }`，**HTTP 状态码恒为 200**，业务成败看 `code`（0 成功；40101 登录失败；40102 token 过期、40103 token 无效 → client.ts 都清空登录态跳 `/login?redirect=`）。
 - 接口前缀 `/v1`（无 `/api` 前缀）；管理接口走 `Authorization: Bearer <accessToken>`。
 - JSON 字段全部驼峰（`publishedAt`、`coverUrl` 等），时间戳为 RFC3339 带时区。
 - 一期登录响应 `refreshToken` 为空串，**无刷新机制**；accessToken 只存内存，刷新页面即回到游客态（已知取舍）。
