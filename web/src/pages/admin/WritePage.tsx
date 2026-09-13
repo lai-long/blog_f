@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { createArticle, updateArticle, uploadImage } from '../../api/admin'
-import { articleDetailUrl } from '../../api/article'
+import { adminArticleDetailUrl, createArticle, updateArticle, uploadImage } from '../../api/admin'
 import { client, ApiError } from '../../api/client'
 import { useTitle } from '../../hooks/useTitle'
 import type { ArticleDetail } from '../../types'
 import MarkdownRenderer from '../../components/MarkdownRenderer'
 import Loading from '../../components/Loading'
 
-// 写作页：/admin/write 新建，/admin/write/:slug 编辑（复用同一组件）
+// 写作页：/admin/write 新建，/admin/write/:id 编辑（复用同一组件）
 export default function WritePage() {
-    const { slug: editSlug } = useParams<{ slug: string }>()
-    const isEdit = Boolean(editSlug)
+    const { id: editId } = useParams<{ id: string }>()
+    const isEdit = Boolean(editId)
     useTitle(isEdit ? '编辑文章' : '写文章')
     const navigate = useNavigate()
 
@@ -29,11 +28,11 @@ export default function WritePage() {
     const [uploading, setUploading] = useState(false)
     const [error, setError] = useState('')
 
-    // 编辑模式：加载已有文章填充表单
+    // 编辑模式：走后台详情接口加载（草稿/隐藏也能打开），填充表单
     useEffect(() => {
-        if (!editSlug) return
+        if (!editId) return
         client
-            .get<ArticleDetail>(articleDetailUrl(editSlug))
+            .get<ArticleDetail>(adminArticleDetailUrl(Number(editId)))
             .then((a) => {
                 setId(a.id)
                 setTitle(a.title)
@@ -42,11 +41,11 @@ export default function WritePage() {
                 setCoverUrl(a.coverUrl ?? '')
                 setContent(a.content)
                 setTagsText(a.tags.map((t) => t.name).join(', '))
-                setStatus(1) // 公开接口只能查到已发布文章，能查到即为已发布
+                setStatus(a.status)
             })
             .catch((err: unknown) => setError(err instanceof ApiError ? err.message : '加载失败'))
             .finally(() => setPageLoading(false))
-    }, [editSlug])
+    }, [editId])
 
     const save = async (nextStatus: number) => {
         setSaving(true)

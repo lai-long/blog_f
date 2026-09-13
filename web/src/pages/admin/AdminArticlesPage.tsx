@@ -132,7 +132,7 @@ export default function AdminArticlesPage() {
                                         {new Date(a.updatedAt).toLocaleString('zh-CN')}
                                     </td>
                                     <td className="space-x-3 px-4 py-3">
-                                        <Link to={`/admin/write/${a.slug}`} className="text-blue-600 hover:underline dark:text-blue-400">
+                                        <Link to={`/admin/write/${a.id}`} className="text-blue-600 hover:underline dark:text-blue-400">
                                             编辑
                                         </Link>
                                         <button type="button" disabled={operating} onClick={() => toggleTop(a)} className="text-gray-500 hover:underline disabled:opacity-40">

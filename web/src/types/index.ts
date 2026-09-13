@@ -38,6 +38,7 @@ export interface ArticleDetail {
     summary?: string
     content: string
     coverUrl?: string
+    status: number // 0=草稿 1=发布 2=隐藏（公开详情恒为 1）
     views: number
     isTop: number // 1=置顶
     publishedAt: string

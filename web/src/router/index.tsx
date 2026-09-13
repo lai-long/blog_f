@@ -43,7 +43,7 @@ export default function AppRoutes(){
                     <Route path="/admin" element={<DashboardPage />} />
                     <Route path="/admin/articles" element={<AdminArticlesPage />} />
                     <Route path="/admin/write" element={<WritePage />} />
-                    <Route path="/admin/write/:slug" element={<WritePage />} />
+                    <Route path="/admin/write/:id" element={<WritePage />} />
                     <Route path="/admin/comments" element={<AdminCommentsPage />} />
                     <Route path="/admin/settings" element={<AdminSettingsPage />} />
                 </Route>

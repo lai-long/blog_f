@@ -22,6 +22,11 @@ export function adminArticleListUrl(page: number, size = 10, status = -1) {
     return `/admin/articles?page=${page}&size=${size}&status=${status}`
 }
 
+// 后台详情：编辑页加载用，草稿/隐藏也能查到（公开详情接口对非发布文章 404）
+export function adminArticleDetailUrl(id: number) {
+    return `/admin/articles/${id}`
+}
+
 export function createArticle(body: ArticleSaveBody) {
     return client.post<Record<string, never>>('/admin/articles', body)
 }
