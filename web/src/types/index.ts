@@ -125,5 +125,7 @@ export interface VisitStatsResp {
     todayUv: number
     totalPv: number
     totalUv: number
+    totalArticles: number // 未删除文章总数（含草稿）
+    totalViews: number // 全部文章阅读量之和
     trend: DayStat[] // 最近 7 天，按日期升序
 }

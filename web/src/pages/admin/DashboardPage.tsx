@@ -1,29 +1,26 @@
-import { adminArticleListUrl, adminCommentListUrl, adminStatsUrl } from '../../api/admin'
+import { adminCommentListUrl, adminStatsUrl } from '../../api/admin'
 import { useFetch } from '../../hooks/useFetch'
 import { useTitle } from '../../hooks/useTitle'
-import type { AdminArticleListResp, AdminCommentListResp, VisitStatsResp } from '../../types'
+import type { AdminCommentListResp, VisitStatsResp } from '../../types'
 import Loading from '../../components/Loading'
 import ErrorState from '../../components/ErrorState'
 
 export default function DashboardPage() {
     useTitle('仪表盘')
 
-    // 后端暂无独立统计接口，用现有列表接口组合出数字（一期文章量小，一次拉全量）
-    const articles = useFetch<AdminArticleListResp>(adminArticleListUrl(1, 1000))
+    // 文章总数/总阅读量由 stats 接口聚合返回（一次拉全量会撞后端 size≤100 的分页限制）
     const pending = useFetch<AdminCommentListResp>(adminCommentListUrl(1, 1, 0))
     const latest = useFetch<AdminCommentListResp>(adminCommentListUrl(1, 5))
     const stats = useFetch<VisitStatsResp>(adminStatsUrl())
 
-    if (articles.loading || pending.loading || latest.loading) return <Loading />
-    if (articles.error) return <ErrorState message={articles.error} onRetry={articles.reload} />
+    if (pending.loading || latest.loading || stats.loading) return <Loading />
     if (pending.error) return <ErrorState message={pending.error} onRetry={pending.reload} />
     if (latest.error) return <ErrorState message={latest.error} onRetry={latest.reload} />
-
-    const totalViews = articles.data?.list.reduce((sum, a) => sum + a.views, 0) ?? 0
+    if (stats.error) return <ErrorState message={stats.error} onRetry={stats.reload} />
 
     const cards = [
-        { label: '文章总数', value: articles.data?.total ?? 0 },
-        { label: '总阅读量', value: totalViews },
+        { label: '文章总数', value: stats.data?.totalArticles ?? 0 },
+        { label: '总阅读量', value: stats.data?.totalViews ?? 0 },
         { label: '待审核评论', value: pending.data?.total ?? 0 },
     ]
 
