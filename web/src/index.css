@@ -61,7 +61,12 @@ body {
   max-width: 100%;
   border-radius: 8px;
 }
+.markdown-body {
+  overflow-wrap: break-word; /* 长英文单词/URL 在窄屏上折断，不撑破版面 */
+}
 .markdown-body table {
+  display: block; /* 手机上表格允许横向滚动，而不是被压扁或撑破 */
+  overflow-x: auto;
   width: 100%;
   border-collapse: collapse;
   margin: 1em 0;

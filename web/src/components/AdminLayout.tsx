@@ -29,8 +29,47 @@ export default function AdminLayout() {
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-50 text-gray-700 dark:bg-gray-950 dark:text-gray-300">
-            <aside className="flex w-48 shrink-0 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-700 md:flex-row dark:bg-gray-950 dark:text-gray-300">
+            {/* 手机端：顶部导航条（横向滚动）；md 起换成左侧边栏 */}
+            <header className="border-b border-gray-200 bg-white md:hidden dark:border-gray-800 dark:bg-gray-900">
+                <div className="flex items-center justify-between px-4 py-3">
+                    <Link to="/" className="font-bold text-gray-900 dark:text-gray-100">
+                        博客后台
+                    </Link>
+                    <div className="flex items-center gap-2">
+                        {profile?.avatarUrl ? (
+                            <img src={profile.avatarUrl} alt="头像" className="h-7 w-7 rounded-full object-cover" />
+                        ) : (
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-xs text-gray-500 dark:bg-gray-700">
+                                {(profile?.nickname || profile?.username || '?').charAt(0)}
+                            </div>
+                        )}
+                        <button type="button" onClick={handleLogout} className="text-sm text-gray-400 hover:text-red-500">
+                            退出
+                        </button>
+                    </div>
+                </div>
+                <nav className="flex gap-1 overflow-x-auto px-2 pb-2">
+                    {navItems.map((item) => (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            end={item.end}
+                            className={({ isActive }) =>
+                                `shrink-0 rounded px-3 py-1.5 text-sm ${
+                                    isActive
+                                        ? 'bg-blue-50 font-bold text-blue-600 dark:bg-blue-950 dark:text-blue-400'
+                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                                }`
+                            }
+                        >
+                            {item.label}
+                        </NavLink>
+                    ))}
+                </nav>
+            </header>
+
+            <aside className="hidden w-48 shrink-0 flex-col border-r border-gray-200 bg-white md:flex dark:border-gray-800 dark:bg-gray-900">
                 <Link to="/" className="border-b border-gray-200 px-4 py-4 font-bold text-gray-900 dark:border-gray-800 dark:text-gray-100">
                     博客后台
                 </Link>
@@ -70,7 +109,7 @@ export default function AdminLayout() {
                     退出登录
                 </button>
             </aside>
-            <main className="flex-1 overflow-x-auto p-6">
+            <main className="flex-1 overflow-x-auto p-4 md:p-6">
                 <Outlet />
             </main>
         </div>

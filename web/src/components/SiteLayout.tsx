@@ -22,11 +22,11 @@ export default function SiteLayout() {
     return (
         <div className="flex min-h-screen flex-col bg-white text-gray-700 dark:bg-gray-950 dark:text-gray-300">
             <header className="border-b border-gray-200 dark:border-gray-800">
-                <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-                    <Link to="/" className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-4">
+                    <Link to="/" className="shrink-0 text-lg font-bold text-gray-900 dark:text-gray-100">
                         {siteTitle}
                     </Link>
-                    <nav className="flex items-center gap-4 text-sm">
+                    <nav className="flex items-center gap-3 text-sm sm:gap-4">
                         <Link to="/archive" className="hover:text-gray-900 dark:hover:text-gray-100">归档</Link>
                         <Link to="/tags" className="hover:text-gray-900 dark:hover:text-gray-100">标签</Link>
                         <Link to="/search" className="hover:text-gray-900 dark:hover:text-gray-100">搜索</Link>
@@ -34,9 +34,11 @@ export default function SiteLayout() {
                         <button
                             type="button"
                             onClick={toggle}
-                            className="rounded border border-gray-300 px-3 py-1 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+                            className="shrink-0 rounded border border-gray-300 px-2 py-1 hover:bg-gray-100 sm:px-3 dark:border-gray-700 dark:hover:bg-gray-800"
                         >
-                            {theme === 'dark' ? '☀️ 浅色' : '🌙 深色'}
+                            {/* 手机上只留图标，文字占地方 */}
+                            {theme === 'dark' ? '☀️' : '🌙'}
+                            <span className="hidden sm:inline">{theme === 'dark' ? ' 浅色' : ' 深色'}</span>
                         </button>
                     </nav>
                 </div>
@@ -47,7 +49,7 @@ export default function SiteLayout() {
             </main>
 
             <footer className="border-t border-gray-200 dark:border-gray-800">
-                <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 text-sm text-gray-400">
+                <div className="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-4 text-sm text-gray-400 sm:flex-row sm:items-center sm:justify-between">
                     <span>© {new Date().getFullYear()} {siteTitle}{config?.icp ? ` · ${config.icp}` : ''}</span>
                     <span className="flex gap-4">
                         {config?.githubUrl && (

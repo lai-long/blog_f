@@ -91,14 +91,14 @@ export default function WritePage() {
             <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{isEdit ? '编辑文章' : '写文章'}</h1>
 
             <div className="mt-4 flex flex-wrap items-center gap-3">
-                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="标题" required className={`${inputCls} w-64`} />
-                <input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="slug（URL 用，如 my-first-post）" required className={`${inputCls} w-64`} />
-                <input value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="摘要（可选）" className={`${inputCls} w-64`} />
-                <input value={tagsText} onChange={(e) => setTagsText(e.target.value)} placeholder="标签（逗号分隔，可选）" className={`${inputCls} w-64`} />
+                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="标题" required className={`${inputCls} w-full sm:w-64`} />
+                <input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="slug（URL 用，如 my-first-post）" required className={`${inputCls} w-full sm:w-64`} />
+                <input value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="摘要（可选）" className={`${inputCls} w-full sm:w-64`} />
+                <input value={tagsText} onChange={(e) => setTagsText(e.target.value)} placeholder="标签（逗号分隔，可选）" className={`${inputCls} w-full sm:w-64`} />
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-3">
-                <input value={coverUrl} onChange={(e) => setCoverUrl(e.target.value)} placeholder="封面图 URL（可选）" className={`${inputCls} w-96`} />
+                <input value={coverUrl} onChange={(e) => setCoverUrl(e.target.value)} placeholder="封面图 URL（可选）" className={`${inputCls} w-full sm:w-96`} />
                 <label className="cursor-pointer rounded border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
                     {uploading ? '上传中…' : '上传封面'}
                     <input type="file" accept="image/*" onChange={uploadCover} className="hidden" />
@@ -106,8 +106,8 @@ export default function WritePage() {
                 {coverUrl && <img src={coverUrl} alt="封面预览" className="h-16 rounded" />}
             </div>
 
-            {/* 分屏：左编辑右预览 */}
-            <div className="mt-4 grid grid-cols-2 gap-4">
+            {/* 分屏：宽屏左编辑右预览，手机上下堆叠 */}
+            <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}

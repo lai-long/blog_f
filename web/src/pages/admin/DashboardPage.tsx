@@ -37,20 +37,20 @@ export default function DashboardPage() {
     return (
         <div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">仪表盘</h1>
-            <div className="mt-6 grid grid-cols-3 gap-4">
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {cards.map((c) => (
-                    <div key={c.label} className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+                    <div key={c.label} className="rounded-lg border border-gray-200 bg-white p-4 md:p-6 dark:border-gray-800 dark:bg-gray-900">
                         <p className="text-sm text-gray-400">{c.label}</p>
-                        <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{c.value}</p>
+                        <p className="mt-2 text-2xl font-bold text-gray-900 md:text-3xl dark:text-gray-100">{c.value}</p>
                     </div>
                 ))}
             </div>
 
-            <div className="mt-4 grid grid-cols-4 gap-4">
+            <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {visitCards.map((c) => (
-                    <div key={c.label} className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+                    <div key={c.label} className="rounded-lg border border-gray-200 bg-white p-4 md:p-6 dark:border-gray-800 dark:bg-gray-900">
                         <p className="text-sm text-gray-400">{c.label}</p>
-                        <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{c.value}</p>
+                        <p className="mt-2 text-2xl font-bold text-gray-900 md:text-3xl dark:text-gray-100">{c.value}</p>
                     </div>
                 ))}
             </div>
