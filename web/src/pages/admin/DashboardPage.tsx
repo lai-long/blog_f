@@ -59,15 +59,18 @@ export default function DashboardPage() {
             {trend.length > 0 && (
                 <div className="mt-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
                     <p className="text-sm text-gray-400">最近 7 天访问量（PV）</p>
-                    <div className="mt-4 flex h-32 items-end gap-2">
+                    <div className="mt-4 flex gap-2">
                         {trend.map((d) => (
                             <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
                                 <span className="text-xs text-gray-400">{d.pv > 0 ? d.pv : ''}</span>
-                                <div
-                                    className="w-full rounded-t bg-blue-500/80"
-                                    style={{ height: `${Math.max((d.pv / maxPv) * 100, d.pv > 0 ? 4 : 1)}%` }}
-                                    title={`${d.date}：PV ${d.pv} / UV ${d.uv}`}
-                                />
+                                {/* 柱子容器必须给固定高度，柱子的百分比高度才有效（父级 auto 时 % 会塌成 0） */}
+                                <div className="flex h-24 w-full items-end">
+                                    <div
+                                        className="w-full rounded-t bg-blue-500/80"
+                                        style={{ height: `${Math.max((d.pv / maxPv) * 100, d.pv > 0 ? 4 : 2)}%` }}
+                                        title={`${d.date}：PV ${d.pv} / UV ${d.uv}`}
+                                    />
+                                </div>
                                 <span className="text-xs text-gray-400">{d.date.slice(5)}</span>
                             </div>
                         ))}
